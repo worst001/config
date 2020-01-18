@@ -14,18 +14,22 @@ if [[ $- =~ i ]]; then
 # To use custom commands instead of find, override _fzf_compgen_{path,dir}
 if ! declare -f _fzf_compgen_path > /dev/null; then
   _fzf_compgen_path() {
-    echo "$1"
-    command find -L "$1" \
-      -name .git -prune -o -name .svn -prune -o \( -type d -o -type f -o -type l \) \
-      -a -not -path "$1" -print 2> /dev/null | sed 's@^\./@@'
+#     echo "$1"
+    # command find -L "$1" \
+    #   -name .git -prune -o -name .svn -prune -o \( -type d -o -type f -o -type l \) \
+      # -a -not -path "$1" -print 2> /dev/null | sed 's@^\./@@'
+      fd --hidden --follow  --exclude ".git" . "$1"
+      # ag --hidden --ignore .git -g . "$1"
   }
 fi
 
 if ! declare -f _fzf_compgen_dir > /dev/null; then
   _fzf_compgen_dir() {
-    command find -L "$1" \
-      -name .git -prune -o -name .svn -prune -o -type d \
-      -a -not -path "$1" -print 2> /dev/null | sed 's@^\./@@'
+#     command find -L "$1" \
+      # -name .git -prune -o -name .svn -prune -o -type d \
+      # -a -not -path "$1" -print 2> /dev/null | sed 's@^\./@@'
+      fd --type d --hidden --follow  --exclude ".git" . "$1"
+      # ag --hidden --ignore .git -g . "$1"
   }
 fi
 
